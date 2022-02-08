@@ -1,41 +1,32 @@
 function mergeArrays(left: number[], right: number[]): number[] {
-  const result: number[] = [];
-  const index = [0, 0];
-  let merging = true;
+  const result = [],
+    lLen = left.length,
+    rLen = right.length;
 
-  const merge = (l: number, r: number) => {
-    const hasLeft = l !== undefined;
-    const hasRight = r !== undefined;
+  let l = 0,
+    r = 0;
 
-    if (!hasLeft && !hasRight) {
-      return (merging = false);
+  while (l < lLen && r < rLen) {
+    if (left[l] < right[r]) {
+      result.push(left[l++]);
+    } else {
+      result.push(right[r++]);
     }
-
-    const pushLeft = (hasLeft && !hasRight) || l < r;
-
-    result.push(pushLeft ? l : r);
-    index[pushLeft ? 0 : 1] += 1;
-  };
-
-  while (merging) {
-    merge(left[index[0]], right[index[1]]);
   }
 
-  return result;
+  return result.concat(left.slice(l)).concat(right.slice(r));
 }
 
 export function mergeSort(arr: number[]): number[] {
-  if (arr.length < 2) {
+  const len = arr.length;
+
+  if (len < 2) {
     return arr;
   }
 
-  const centerIndex = Math.floor(arr.length / 2);
+  const mid = Math.floor(len / 2),
+    left = arr.slice(0, mid),
+    right = arr.slice(mid);
 
-  const left = arr.slice(0, centerIndex),
-    leftSorted = mergeSort(left);
-
-  const right = arr.slice(centerIndex),
-    rightSorted = mergeSort(right);
-
-  return mergeArrays(leftSorted, rightSorted);
+  return mergeArrays(mergeSort(left), mergeSort(right));
 }
